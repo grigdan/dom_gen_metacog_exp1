@@ -171,11 +171,11 @@ function createNumerosityBlock(numTrials, timing, isTraining) {
         var n = NUM_FIXED;
         
         // Sample Proportion from Normal Distribution (Mean 0.5, SD 0.05)
-        // Keep picking a new number until it falls inside 0.40 and 0.60
+        // Keep picking a new number until it falls inside 0.40 and 0.60 and not 0.50
         var p;
         do {
-            p = randomNormal(0.5, 0.05);
-        } while (p < 0.40 || p > 0.60);
+            p = randomNormal(0.5, 0.05); 
+        } while (p < 0.40 || p > 0.60 || Math.abs(p - 0.5) < 0.01);
 
         var correct_key = (p > 0.5) ? 'ArrowLeft' : 'ArrowRight';
 
@@ -363,6 +363,17 @@ const save_data = {
             filename: filename,
             data_string: () => jsPsych.data.get().csv()
         };
+var endDebriefing = {
+            type: jsPsychInstructions,
+            pages: [
+                `p>Thank you very much for your participation. The purpose of this study was to examine how metacognitive judgments change depending on the type of task and to also investigate individual differences in variation. We are focusing on how individual differences in metacognitive insight within the general population influence the calibration of confidence judgments across perceptual and memory tasks. We plan to utilize a combination of computational models to quantify potential individual differences in behavioral performance during the task.
+                <p><b>Your data has been saved</b> on our servers, so you are free to close this window whenever you want. Thanks again!</p>`
+            ],
+            button_label_next: "Clear this screen",
+            show_clickable_nav: true
+        };
+
+
 // ---------------------------------------------------------
 // MASTER TIMELINE
 // ---------------------------------------------------------
@@ -393,9 +404,8 @@ timeline.push(msas_d);
 // Save & Exit
 timeline.push(save_data);
 // Debrief
-// timeline.push(derief inst)
 timeline.push({ type: jsPsychFullscreen, fullscreen_mode: false });
-
+timeline.push(endDebriefing);
 // Run
 jsPsych.run(timeline);
 
