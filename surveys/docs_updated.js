@@ -29,28 +29,28 @@ var jsPsychSurveyDOCS = (function (jspsych) {
                     [
                         {
                             prompt: "About how much time have you spent each day thinking about contamination and engaging in washing or cleaning behaviours because of contamination?",
-                            responses: ["Never", "Once a month or less often", "2-4 times a month", "2-3 times a week", "4 times a week or more often"],
-                            values: [0, 1, 2, 3, 4]
+                            responses: ["None at all", "Less than 1 hour each day", "Between 1 and 3 hours each day", "Between 3 and 8 hours each day", "8 hours or more each day", "Prefer not to disclose"],
+                            values: [0, 1, 2, 3, 4, 5]
                         },
                         {
                             prompt: "To what extent have you avoided situations in order to prevent concerns with contamination or having to spend time washing, cleaning, or showering?",
-                            responses: ["Never", "Once a month or less often", "2-4 times a month", "2-3 times a week", "4 times a week or more often"],
-                            values: [0, 1, 2, 3, 4]
+                            responses: ["None at all", "A little avoidance", "A moderate amount of avoidance", "A great deal of avoidance", "Extreme avoidance of nearly all things", "Prefer not to disclose"],
+                            values: [0, 1, 2, 3, 4, 5]
                         },
                         {
                             prompt: "If you had thoughts about contamination but could not wash, clean, or shower (or otherwise remove the contamination), how distressed or anxious did you become?",
-                            responses: ["Never", "Once a month or less often", "2-4 times a month", "2-3 times a week", "4 times a week or more often"],
-                            values: [0, 1, 2, 3, 4]
+                            responses: ["Not at all distressed/anxious", "Mildly distressed/anxious", "Moderately distressed/anxious", "Severely distressed/anxious", "Extremely distressed/anxious", "Prefer not to disclose"],
+                            values: [0, 1, 2, 3, 4, 5]
                         },
                         {
                             prompt: "To what extent has your daily routine (work, school, self-care, social life) been disrupted by contamination concerns and excessive washing, showering, cleaning, or avoidance behaviours?",
-                            responses: ["Never", "Once a month or less often", "2-4 times a month", "2-3 times a week", "4 times a week or more often"],
-                            values: [0, 1, 2, 3, 4]
+                            responses: ["No disruption at all", "A little disruption, but I mostly function well", "Many things are disrupted, but I can still manage", "My life is disrupted in many ways and I have trouble managing", "My life is completely disrupted and I cannot function at all", "Prefer not to disclose"],
+                            values: [0, 1, 2, 3, 4, 5]
                         },
                         {
                             prompt: "How difficult is it for you to disregard thoughts about contamination and refrain from behaviours such as washing, showering, cleaning, and other decontamination routines when you try to do so?",
-                            responses: ["Never", "Once a month or less often", "2-4 times a month", "2-3 times a week", "4 times a week or more often"],
-                            values: [0, 1, 2, 3, 4]
+                            responses: ["Not at all difficult", "A little difficult", "Moderately difficult", "Very difficult", "Extremely difficult", "Prefer not to disclose"],
+                            values: [0, 1, 2, 3, 4, 5]
                         }
                     ],
 
@@ -58,28 +58,28 @@ var jsPsychSurveyDOCS = (function (jspsych) {
                     [
                         {
                             prompt: "About how much time have you spent each day thinking about the possibility of harm or disasters and engaging in checking or efforts to get reassurance that such things do not (or did not) occur?",
-                            responses: ["Never", "Once a month or less often", "2-4 times a month", "2-3 times a week", "4 times a week or more often"],
-                            values: [0, 1, 2, 3, 4]
+                            responses: ["None at all", "Less than 1 hour each day", "Between 1 and 3 hours each day", "Between 3 and 8 hours each day", "8 hours or more each day", "Prefer not to disclose"],
+                            values: [0, 1, 2, 3, 4, 5]
                         },
                         {
                             prompt: "To what extent have you avoided situations so that you did not have to check for danger or worry about possible harm or disasters?",
-                            responses: ["Never", "Once a month or less often", "2-4 times a month", "2-3 times a week", "4 times a week or more often"],
-                            values: [0, 1, 2, 3, 4]
+                            responses: ["None at all", "A little avoidance", "A moderate amount of avoidance", "A great deal of avoidance", "Extreme avoidance of nearly all things", "Prefer not to disclose"],
+                            values: [0, 1, 2, 3, 4, 5]
                         },
                         {
                             prompt: "When you think about the possibility of harm or disasters, or if you cannot check or get reassurance about these things, how distressed or anxious did you become?",
-                            responses: ["Never", "Once a month or less often", "2-4 times a month", "2-3 times a week", "4 times a week or more often"],
-                            values: [0, 1, 2, 3, 4]
+                            responses: ["Not at all distressed/anxious", "Mildly distressed/anxious", "Moderately distressed/anxious", "Severely distressed/anxious", "Extremely distressed/anxious", "Prefer not to disclose"],
+                            values: [0, 1, 2, 3, 4, 5]
                         },
                         {
                             prompt: "To what extent has your daily routine (work, school, self-care, social life) been disrupted by thoughts about harm or disasters and excessive checking or asking for reassurance?",
-                            responses: ["Never", "Once a month or less often", "2-4 times a month", "2-3 times a week", "4 times a week or more often"],
-                            values: [0, 1, 2, 3, 4]
+                            responses: ["No disruption at all", "A little disruption, but I mostly function well", "Many things are disrupted, but I can still manage", "My life is disrupted in many ways and I have trouble managing", "My life is completely disrupted and I cannot function at all", "Prefer not to disclose"],
+                            values: [0, 1, 2, 3, 4, 5]
                         },
                         {
                             prompt: "How difficult is it for you to disregard thoughts about possible harm or disasters and refrain from checking or reassurance-seeking behaviours when you try to do so?",
-                            responses: ["Never", "Once a month or less often", "2-4 times a month", "2-3 times a week", "4 times a week or more often"],
-                            values: [0, 1, 2, 3, 4]
+                            responses: ["Not at all difficult", "A little difficult", "Moderately difficult", "Very difficult", "Extremely difficult", "Prefer not to disclose"],
+                            values: [0, 1, 2, 3, 4, 5]
                         }
                     ],
 
@@ -87,56 +87,56 @@ var jsPsychSurveyDOCS = (function (jspsych) {
                     [
                         {
                             prompt: "About how much time have you spent each day with unwanted unpleasant thoughts and with behavioural or mental actions to deal with them?",
-                            responses: ["Never", "Once a month or less often", "2-4 times a month", "2-3 times a week", "4 times a week or more often"],
-                            values: [0, 1, 2, 3, 4]
+                            responses: ["None at all", "Less than 1 hour each day", "Between 1 and 3 hours each day", "Between 3 and 8 hours each day", "8 hours or more each day", "Prefer not to disclose"],
+                            values: [0, 1, 2, 3, 4, 5]
                         },
                         {
                             prompt: "To what extent have you been avoiding situations, places, objects and other reminders (e.g., numbers, people) that trigger unwanted or unpleasant thoughts?",
-                            responses: ["Never", "Once a month or less often", "2-4 times a month", "2-3 times a week", "4 times a week or more often"],
-                            values: [0, 1, 2, 3, 4]
+                            responses: ["None at all", "A little avoidance", "A moderate amount of avoidance", "A great deal of avoidance", "Extreme avoidance of nearly all things", "Prefer not to disclose"],
+                            values: [0, 1, 2, 3, 4, 5]
                         },
                         {
                             prompt: "When unwanted or unpleasant thoughts come to mind against your will how distressed or anxious did you become?",
-                            responses: ["Never", "Once a month or less often", "2-4 times a month", "2-3 times a week", "4 times a week or more often"],
-                            values: [0, 1, 2, 3, 4]
+                            responses: ["Not at all distressed/anxious", "Mildly distressed/anxious", "Moderately distressed/anxious", "Severely distressed/anxious", "Extremely distressed/anxious", "Prefer not to disclose"],
+                            values: [0, 1, 2, 3, 4, 5]
                         },
                         {
                             prompt: "To what extent has your daily routine (work, school, self-care, social life) been disrupted by unwanted and unpleasant thoughts and efforts to avoid or deal with such thoughts?",
-                            responses: ["Never", "Once a month or less often", "2-4 times a month", "2-3 times a week", "4 times a week or more often"],
-                            values: [0, 1, 2, 3, 4]
+                            responses: ["No disruption at all", "A little disruption, but I mostly function well", "Many things are disrupted, but I can still manage", "My life is disrupted in many ways and I have trouble managing", "My life is completely disrupted and I cannot function at all", "Prefer not to disclose"],
+                            values: [0, 1, 2, 3, 4, 5]
                         },
                         {
                             prompt: "How difficult is it for you to disregard unwanted or unpleasant thoughts and refrain from using behavioural or mental acts to deal with them when you try to do so?",
-                            responses: ["Never", "Once a month or less often", "2-4 times a month", "2-3 times a week", "4 times a week or more often"],
-                            values: [0, 1, 2, 3, 4]
+                            responses: ["Not at all difficult", "A little difficult", "Moderately difficult", "Very difficult", "Extremely difficult", "Prefer not to disclose"],
+                            values: [0, 1, 2, 3, 4, 5]
                         }
                     ],
                     // --- PAGE 4 ---
                     [
                         {
                             prompt: "About how much time have you spent each day with unwanted thoughts about symmetry, order, or balance and with behaviours intended to achieve symmetry, order or balance?",
-                            responses: ["Never", "Once a month or less often", "2-4 times a month", "2-3 times a week", "4 times a week or more often"],
-                            values: [0, 1, 2, 3, 4]
+                            responses: ["None at all", "Less than 1 hour each day", "Between 1 and 3 hours each day", "Between 3 and 8 hours each day", "8 hours or more each day", "Prefer not to disclose"],
+                            values: [0, 1, 2, 3, 4, 5]
                         },
                         {
                             prompt: "To what extent have you been avoiding situations, places or objects associated with feelings that something is not symmetrical or “just right?”",
-                            responses: ["Never", "Once a month or less often", "2-4 times a month", "2-3 times a week", "4 times a week or more often"],
-                            values: [0, 1, 2, 3, 4]
+                            responses: ["None at all", "A little avoidance", "A moderate amount of avoidance", "A great deal of avoidance", "Extreme avoidance of nearly all things", "Prefer not to disclose"],
+                            values: [0, 1, 2, 3, 4, 5]
                         },
                         {
                             prompt: "When you have the feeling of something being “not just right,” how distressed or anxious did you become?",
-                            responses: ["Never", "Once a month or less often", "2-4 times a month", "2-3 times a week", "4 times a week or more often"],
-                            values: [0, 1, 2, 3, 4]
+                            responses: ["Not at all distressed/anxious", "Mildly distressed/anxious", "Moderately distressed/anxious", "Severely distressed/anxious", "Extremely distressed/anxious", "Prefer not to disclose"],
+                            values: [0, 1, 2, 3, 4, 5]
                         },
                         {
                             prompt: "To what extent has your daily routine (work, school, self-care, social life) been disrupted by the feeling of things being “not just right,” and efforts to put things in order or make them feel right?",
-                            responses: ["Never", "Once a month or less often", "2-4 times a month", "2-3 times a week", "4 times a week or more often"],
-                            values: [0, 1, 2, 3, 4]
+                            responses: ["No disruption at all", "A little disruption, but I mostly function well", "Many things are disrupted, but I can still manage", "My life is disrupted in many ways and I have trouble managing", "My life is completely disrupted and I cannot function at all", "Prefer not to disclose"],
+                            values: [0, 1, 2, 3, 4, 5]
                         },
                         {
                             prompt: "How difficult is it for you to disregard thoughts about the lack of symmetry and order, and refrain from urges to arrange things in order or repeat certain behaviours when you try to do so?",
-                            responses: ["Never", "Once a month or less often", "2-4 times a month", "2-3 times a week", "4 times a week or more often"],
-                            values: [0, 1, 2, 3, 4]
+                            responses: ["Not at all difficult", "A little difficult", "Moderately difficult", "Very difficult", "Extremely difficult", "Prefer not to disclose"],
+                            values: [0, 1, 2, 3, 4, 5]
                         }
                     ],
                 ];
