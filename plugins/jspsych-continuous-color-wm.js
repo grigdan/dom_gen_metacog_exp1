@@ -121,7 +121,9 @@ var jsPsychContinuousColorWM = (function (jspsych) {
 
             var options = [target_degree, foil_degree];
             options = this.jsPsych.randomization.shuffle(options);
-
+            // 4. RT fix
+            var start_time = 0; 
+            
             var trial_data = {
                 task: 'ContinuousWM',
                 set_size: trial.set_size,
@@ -223,6 +225,7 @@ var jsPsychContinuousColorWM = (function (jspsych) {
                             
                             document.getElementById('wmFixation').style.display = 'none';
                             drawScene('probe');
+                            start_time = performance.now();
                         }, trial.delay_time);
 
                     }, trial.stimulus_duration);
@@ -230,9 +233,11 @@ var jsPsychContinuousColorWM = (function (jspsych) {
             };
 
             const handleResponse = (e) => {
+                var rt = performance.now() - start_time; 
+                trial_data.rt = rt;
                 var chosen_deg = parseInt(e.target.getAttribute('data-degree'));
                 trial_data.response_degree = chosen_deg;
-                trial_data.correct = (chosen_deg === target_degree);
+                trial_data.response_correct = (chosen_deg === target_degree);
 
                 document.getElementById('wmItems').innerHTML = '';
 
@@ -264,7 +269,7 @@ var jsPsychContinuousColorWM = (function (jspsych) {
             const handleFeedback = () => {
                 if (trial.feedback) {
                     document.getElementById('wmStage').style.display = 'block';
-                    var msg = trial_data.correct ? "<span style='color:green'>CORRECT</span>" : "<span style='color:red'>INCORRECT</span>";
+                    var msg = trial_data.response_correct ? "<span style='color:green'>CORRECT</span>" : "<span style='color:red'>INCORRECT</span>";
                     document.getElementById('wmItems').innerHTML = `<div class='wm-feedback'>${msg}</div>`;
 
                     this.jsPsych.pluginAPI.setTimeout(() => {

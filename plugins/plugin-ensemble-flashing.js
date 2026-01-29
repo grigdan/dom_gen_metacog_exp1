@@ -187,7 +187,7 @@ var jsPsychNumerosityEstimationEnsemble = (function (jspsych) {
                     display_element.innerHTML = '';
                     trial_data.rt = info.rt;
                     trial_data.response = info.key;
-
+                    trial_data.response_correct = this.jsPsych.pluginAPI.compareKeys(info.key, trial.correct_key);
                     if (trial.confidence_timing === 'after') {
                         showConfidence(checkFeedback);
                     } else {
