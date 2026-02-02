@@ -145,9 +145,9 @@ var jsPsychContinuousColorWM = (function (jspsych) {
             </p>
             <input type="range" min="0" max="100" value="50" class="jspsych-slider" id="confRange">
             <div class="slider-labels">
-                <span>0% confident<br>(I was guessing)</span>
-                <span>50% confident<br>(Somewhat uncertain)</span>
-                <span>100% confident<br>(Completely certain)</span>
+                <span>0% confident<br>(Guessing)</span>
+                <span>50% confident<br>(Uncertain)</span>
+                <span>100% confident<br>(Certain)</span>
             </div>
             <button class="slider-btn" id="btnSubmitConf">Submit</button>
         </div>
@@ -156,6 +156,10 @@ var jsPsychContinuousColorWM = (function (jspsych) {
             // Trial Canvases
             // 'encoding' (circles), 'delay' (no colors), 'probe' (target)
             const drawScene = (phase) => {
+                if(phase === 'probe') {
+                    document.body.style.cursor = 'default';
+                }
+                
                 var html = '';
                 var cx = 400, cy = 300;
 
@@ -213,11 +217,12 @@ var jsPsychContinuousColorWM = (function (jspsych) {
             const runMemoryPhase = () => {
                 document.getElementById('wmStage').style.display = 'block';
                 document.getElementById('wmFixation').style.display = 'block';
-
+                
                 document.getElementById('wmFixation').addEventListener('click', () => {
-                    
-                    drawScene('encoding');
 
+                    document.body.style.cursor = 'none';
+                    drawScene('encoding');
+                    
                     this.jsPsych.pluginAPI.setTimeout(() => {
                         
                         drawScene('delay');
@@ -267,6 +272,7 @@ var jsPsychContinuousColorWM = (function (jspsych) {
             };
 
             const handleFeedback = () => {
+                document.body.style.cursor = 'default';
                 if (trial.feedback) {
                     document.getElementById('wmStage').style.display = 'block';
                     var msg = trial_data.response_correct ? "<span style='color:green'>CORRECT</span>" : "<span style='color:red'>INCORRECT</span>";

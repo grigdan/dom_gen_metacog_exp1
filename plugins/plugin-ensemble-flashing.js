@@ -15,8 +15,7 @@ var jsPsychNumerosityEstimationEnsemble = (function (jspsych) {
             grid_cols: { type: jspsych.ParameterType.INT, default: 11 },
             left_image: { type: jspsych.ParameterType.STRING, default: undefined },
             right_image: { type: jspsych.ParameterType.STRING, default: undefined },
-            choices: { type: jspsych.ParameterType.KEYS, default: ['ArrowLeft', 'ArrowRight'] },
-            correct_key: { type: jspsych.ParameterType.KEY, default: null },
+            correct_response: { type: jspsych.ParameterType.STRING, default: null },
             confidence_timing: { type: jspsych.ParameterType.STRING, default: 'after' },
             feedback: { type: jspsych.ParameterType.BOOL, default: false },
             canvas_width: { type: jspsych.ParameterType.INT, default: 800 },
@@ -40,7 +39,8 @@ var jsPsychNumerosityEstimationEnsemble = (function (jspsych) {
         .slider-btn { margin-top: 20px; padding: 10px 20px; font-size: 16px; cursor: pointer; }
 
         .num-container { display: flex; justify-content: space-between; align-items: center; width: 90%; margin: 50px auto; }
-        .num-option { text-align: center; cursor: pointer; }
+        .num-option { text-align: center; cursor: pointer; transition: transform 0.2s; }
+        .num-option:hover { transform: scale(1.05); }
         .num-img { width: 200px; height: auto; border: 4px solid transparent; }
         .num-keys { font-size: 20px; margin-top: 10px; font-weight: bold; }
         .num-prompt { font-size: 24px; margin-top: 20px; text-align: center; }
@@ -94,6 +94,7 @@ var jsPsychNumerosityEstimationEnsemble = (function (jspsych) {
             };
 
             const runAnimationSequence = () => {
+                document.body.style.cursor = 'none';
                 var canvas = document.createElement("canvas");
                 canvas.width = trial.canvas_width;
                 canvas.height = trial.canvas_height;
@@ -174,42 +175,46 @@ var jsPsychNumerosityEstimationEnsemble = (function (jspsych) {
             };
 
             const showChoiceScreen = () => {
+                document.body.style.cursor = 'default';
                 display_element.innerHTML = '';
                 var html = `
-          <div class="num-prompt">Which had more targets?</div>
+          <div class="num-prompt">Which had more elements presented?<br><span style="font-size:18px">Click on the image.</span></div>
           <div class="num-container">
-              <div class="num-option"><img src="${trial.left_image}" class="num-img"><div class="num-keys">Press LEFT Arrow</div></div>
-              <div class="num-option"><img src="${trial.right_image}" class="num-img"><div class="num-keys">Press RIGHT Arrow</div></div>
+              <div class="num-option" id="choice-left">
+                  <img src="${trial.left_image}" class="num-img">
+              </div>
+              
+              <div class="num-option" id="choice-right">
+                  <img src="${trial.right_image}" class="num-img">
+              </div>
           </div>`;
                 display_element.innerHTML = html;
 
-                var after_response = (info) => {
-                    display_element.innerHTML = '';
-                    trial_data.rt = info.rt;
-                    trial_data.response = info.key;
-                    trial_data.response_correct = this.jsPsych.pluginAPI.compareKeys(info.key, trial.correct_key);
+                var start_time_resp = performance.now();
+                
+                const handleResponse = (choice) => {
+                    var rt = performance.now() - start_time_resp;
+                    trial_data.rt = rt;
+                    trial_data.response = choice; 
+
+                    var correct = (choice === trial.correct_response);
+                    trial_data.correct = correct;
+
                     if (trial.confidence_timing === 'after') {
                         showConfidence(checkFeedback);
                     } else {
                         checkFeedback();
                     }
                 };
-
-                this.jsPsych.pluginAPI.getKeyboardResponse({
-                    callback_function: after_response,
-                    valid_responses: trial.choices,
-                    rt_method: 'performance',
-                    persist: false,
-                    allow_held_key: false
-                });
+                // Attach listeners
+                document.getElementById('choice-left').addEventListener('click', () => handleResponse('left'));
+                document.getElementById('choice-right').addEventListener('click', () => handleResponse('right'));
             };
 
             const checkFeedback = () => {
-                if (trial.feedback && trial.correct_key) {
-                    const correct = this.jsPsych.pluginAPI.compareKeys(trial_data.response, trial.correct_key);
-                    trial_data.correct = correct;
-                    const color = correct ? 'green' : 'red';
-                    const msg = correct ? 'CORRECT' : 'INCORRECT';
+                if (trial.feedback && trial.correct_response) {
+                    const color = trial_data.correct ? 'green' : 'red';
+                    const msg = trial_data.correct ? 'CORRECT' : 'INCORRECT';
 
                     display_element.innerHTML = `
                 <div class="feedback-overlay"><div class="feedback-msg" style="color: ${color};">${msg}</div></div>`;
@@ -220,6 +225,7 @@ var jsPsychNumerosityEstimationEnsemble = (function (jspsych) {
             };
 
             const endTrial = () => {
+                document.body.style.cursor = 'default';
                 display_element.innerHTML = '';
                 this.jsPsych.finishTrial(trial_data);
             };
