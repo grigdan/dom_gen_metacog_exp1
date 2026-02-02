@@ -177,7 +177,7 @@ function createNumerosityBlock(numTrials, timing, isTraining) {
             p = randomNormal(0.5, 0.05); 
         } while (p < 0.40 || p > 0.60 || Math.abs(p - 0.5) < 0.01);
 
-        var correct_key = (p > 0.5) ? 'ArrowLeft' : 'ArrowRight';
+        var correct_resp = (p > 0.5) ? 'left' : 'right';
 
         block_timeline.push({
             type: jsPsychNumerosityEstimationEnsemble,
@@ -191,7 +191,7 @@ function createNumerosityBlock(numTrials, timing, isTraining) {
             number_of_frames: 4,
             confidence_timing: timing, 
             feedback: isTraining,      
-            correct_key: correct_key,
+            correct_response: correct_resp,
             data: { 
                 task: block_label, 
                 block_type: timing, 
