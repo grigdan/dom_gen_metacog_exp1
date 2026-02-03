@@ -119,17 +119,17 @@ var jsPsychSurveyDOCS = (function (jspsych) {
                             values: [0, 1, 2, 3, 4, 5]
                         },
                         {
-                            prompt: "To what extent have you been avoiding situations, places or objects associated with feelings that something is not symmetrical or “just right?”",
+                            prompt: "To what extent have you been avoiding situations, places or objects associated with feelings that something is not symmetrical or <<just right>>?",
                             responses: ["None at all", "A little avoidance", "A moderate amount of avoidance", "A great deal of avoidance", "Extreme avoidance of nearly all things", "Prefer not to disclose"],
                             values: [0, 1, 2, 3, 4, 5]
                         },
                         {
-                            prompt: "When you have the feeling of something being “not just right,” how distressed or anxious did you become?",
+                            prompt: "When you have the feeling of something being <<not just right,>> how distressed or anxious did you become?",
                             responses: ["Not at all distressed/anxious", "Mildly distressed/anxious", "Moderately distressed/anxious", "Severely distressed/anxious", "Extremely distressed/anxious", "Prefer not to disclose"],
                             values: [0, 1, 2, 3, 4, 5]
                         },
                         {
-                            prompt: "To what extent has your daily routine (work, school, self-care, social life) been disrupted by the feeling of things being “not just right,” and efforts to put things in order or make them feel right?",
+                            prompt: "To what extent has your daily routine (work, school, self-care, social life) been disrupted by the feeling of things being <<not just right,>> and efforts to put things in order or make them feel right?",
                             responses: ["No disruption at all", "A little disruption, but I mostly function well", "Many things are disrupted, but I can still manage", "My life is disrupted in many ways and I have trouble managing", "My life is completely disrupted and I cannot function at all", "Prefer not to disclose"],
                             values: [0, 1, 2, 3, 4, 5]
                         },
@@ -143,7 +143,7 @@ var jsPsychSurveyDOCS = (function (jspsych) {
 
                 const total_pages = pages.length;
                 let current_page = 0;
-                const instructions = 'This questionnaire asks you about thoughts and behaviors that you might or might not experience.';
+                const instructions = 'This questionnaire asks you about thoughts and behaviors that you might or might not experience. Please answer the questions based on your experiences in the last month.';
 
                 //---------------------------------------//
                 // 2. RENDER HTML
