@@ -28,6 +28,7 @@
     <script src="plugins/jsPsych7.3/plugin-external-html.js"></script>
     <script src="plugins/jsPsych7.3/plugin-instructions.js"></script>
     <script src="plugins/jsPsych7.3/plugin-survey-multi-choice.js"></script>
+    <script src="plugins/jsPsych7.3/plugin-survey-html-form.js"></script>
     <script src="plugins/jsPsych7.3/plugin-fullscreen.js"></script>
     <script src="plugins/jsPsych7.3/plugin-preload.js"></script>
     <script src="plugins/jsPsych7.3/plugin-call-function.js"></script>
@@ -233,7 +234,7 @@ function buildTaskUnit(taskName, timing) {
     var unit = [];
     var isPre = (timing === 'before');
     var timeLabel = isPre ? "You will need to rate your confidence of your judgment BEFORE the trial" : "You will need to rate your confidence of your judgment AFTER the trial";
-    var task_block_inst_ = taskName === 'WM' ? "In this memory task, you will be presented with coloured circles that you need to remember. After a brief delay, you will need to choose the previously seen color (highlighted with thick black circle) from two alternatives. TO START EACH TRIAL YOU WILL NEED TO CLICK A BLACK CROSS IN THE CENTER." : "In this perception task, you will be presented with two different sets of berries simultaneously. After a brief delay, you will need to choose red or blue berry depending on which of had higher numbers.";
+    var task_block_inst_ = taskName === 'WM' ? 'Welcome. In this memory task, you will be asked to remember a set of coloured circles. After a brief delay, you will need to choose the previously seen color (position of which will be highlighted with thick black circle) from two alternatives. TO START EACH TRIAL YOU WILL NEED TO CLICK A BLACK CROSS IN THE CENTER.' : 'Welcome. In this task, you will be asked to judge which type of berry is higher in numerosity on the display presented. After a quick break, you will see two possible options to choose from (raspberries or blueberries); you will need to select the one you think has more fruit on the screen.';
     // 1. Instructions
     unit.push({
         type: jsPsychInstructions,
@@ -256,7 +257,7 @@ function buildTaskUnit(taskName, timing) {
     // 3. Main Block Intro
     unit.push({
         type: jsPsychHtmlButtonResponse,
-        stimulus: `<p>Practice complete.</p><p>Starting the <strong>Main Block</strong> (${MAIN_TRIALS} trials).</p><p>Feedback is now OFF.</p>`,
+        stimulus: `<p>Practice complete.</p><p>Starting the <strong>Main Block</strong> (${MAIN_TRIALS} trials).</p><p>Feedback is now OFF.</p><p>The block will take less than 10 minutes on average.</p>`,
         choices: ['Start Main Block']
     });
 
@@ -303,38 +304,117 @@ global_phases = jsPsych.randomization.shuffle(global_phases);
 // ---------------------------------------------------------
 // Consent Form
 // ---------------------------------------------------------
-var consent_trial = {
+var consent_trial_info = {
     type: jsPsychHtmlButtonResponse,
     stimulus: `
     <div style="text-align: left; max-width: 800px; margin: auto; font-size: 16px;">
-        <h3>Consent to Participate</h3>
+        <h3>Information sheet and consent</h3>
         <p>
-            <strong>Study Purpose:</strong> We are conducting research on memory and perception.
+            <strong>Welcome.</strong> In this task, you will be asked to remember simple stimuli. In the memory task, you will be presented with a set of stimuli. After a brief delay, you will need to choose the previously seen stimulus from two alternatives. In the perception task, you will be presented with two different sets of stimuli simultaneously. After a brief delay, you will need to choose one of the two sets in which you think more stimuli had been shown.
         </p>
         <p>
-            <strong>Procedure:</strong> In this task, you will be asked to remember simple stimuli.
+            You will complete two less than 10-minute blocks of each task (memory and perception). In between blocks, you will be given questionnaires that you will be asked to fill out the best that you can. <strong>These questionnaires contain questions that ask about your metacognitive processes in everyday life situations. Some individuals may feel uncomfortable answering these questions.</strong> You can skip any questions you don’t want to answer and can quit the study at any point. If at any point you feel distress, and require assistance please contact the University’s well-being and <a href="https://warwick.ac.uk/services/wss/" title="support">support</a>.
         </p>
         <p>
-            In the memory task, you will be presented with a set of colored circles. After a brief delay, you will need to choose the previously seen color from two alternatives.
+            Please read the following and indicate your agreement by continuing to the next page to start the practice trials:
         </p>
         <p>
-            In the perception task, you will be presented with two different sets of stimuli simultaneously. After a brief delay, you will need to choose one of the two sets in which you think more stimuli had been shown.
+            Your participation is completely voluntary. You can withdraw at any time, and for any reason, simply by closing your browser.   You also have the option to do an alternative experiment for credit if you choose not to participate in this one.
         </p>
         <p>
-            The task will take approximately 30-40 minutes.
+            No identifiable data will be collected from you as part of this study. This means that once your responses have been submitted to the research team, it will not be possible to withdraw this data as your individual responses cannot be identified.
         </p>
         <p>
-            <strong>Rights:</strong> Your participation is voluntary. You may stop at any time without penalty.
-            Your data will be anonymous and used for research purposes only.
+            Data will be securely stored on University of Warwick computers and will be processed only for the purpose of scientific analysis. Access to the data will be restricted to the investigators listed above. Summaries may be presented at conferences and included in scientific publications. Data will be reviewed on completion of the research, in line with the University of Warwick data retention policy.
         </p>
         <p>
-            <strong>Contact:</strong> If you have questions, please contact the researcher.
+            Please refer to the University of Warwick Research Privacy Notice, which is available <a href = "https://warwick.ac.uk/services/idc/dataprotection/privacynotices/researchprivacynotice" title="here">here</a> or by contacting the Information and Data Compliance Team at infocompliance@warwick.ac.uk.
         </p>
-        <p style="text-align: center; font-weight: bold; margin-top: 20px;">
-            By clicking "I Agree" below, you confirm that you are at least 18 years old and consent to participate.
+        <p>
+            This study has been reviewed and given favourable opinion by the University of Warwick’s Humanities and Social Sciences Research Ethics Committee (HSSREC).
+        </p>
+        <p>
+            If you require further information, please contact Dr. Maria Robinson at maria.robinson@warwick.ac.uk or Daniil Grigorev at daniil.grigorev@warwick.ac.uk
+        </p>
+        <p>
+            Who should I contact if I wish to make a complaint? Any complaint should be addressed to the person below, who is a senior University of Warwick official entirely independent of this study:
+        </p>
+        <span style="line-height: 0.5; display: inline-block;">
+        <p>
+            Head of Research Governance
+        </p>
+        <p>
+            Research & Impact Services
+        </p>
+        <p>
+            University House
+        </p>
+        <p>
+            University of Warwick
+        </p>
+        <p>
+            Coventry
+        </p>
+        <p>
+            CV4 8UW
+        </p>
+        <p>
+            Email: researchgovernance@warwick.ac.uk
+        </p>
+        <p>
+            Tel: 02476 575733
+        </p>
+        </span><br>
+        <p>
+        If you wish to raise a complaint on how we have handled your personal data, you can contact our Data Protection Officer who will investigate the matter: DPO@warwick.ac.uk.
+        </p>
+        <p>
+        If you are not satisfied with our response or believe we are processing your personal data in a way that is not lawful you can complain to the Information Commissioner’s Office (ICO).
+        </p>
+        <p>
+        Thank you for taking the time to read this concise Participant Information Leaflet. The full consent form is on the next page.
         </p>
     </div>
     `,
+    choices: ['Next'],
+};
+
+var consent_trial = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: `
+        <div style="text-align: left; max-width: 800px; margin: auto; font-size: 16px;">
+        <h3>Information sheet and consent</h3>
+        <p>
+        <strong>Consent to Participate in Research</strong>: Maria M. Robinson, Ph.D., is conducting a research study to investigate the origins of metacognition, individual differences, and decision-making. You have been asked to participate because you are over 18 years old. Your participation will last about 40 minutes, with the exact expected timing listed in the task description. 
+        </p>
+        <p>
+        If you agree to participate in this study by accepting this agreement and continuing in the task, the following will happen to you: 1. You will participate in perception and memory tasks in which you will need to make a numerosity judgment or remember simple stimuli, respectively. 2. You will be asked to fill out questionnaires that ask about your feelings, thoughts, and behaviours in everyday life. Note that you can skip any questions you don’t want to answer and quit the study at any point.
+        </p>
+        <p>
+        <strong>RISKS</strong>. You will be required only to continue to interact with your web browser and make responses for a short duration. Thus, no potential risks or discomforts are anticipated except for the possibility that some tasks may be slightly boring. However, there may be risks that are currently unforeseeable.
+        </p>
+        <p>
+        <strong>PAYMENT/REMUNERATION</strong>. In consideration of your time, you will receive payment at the rate described through the recruitment system. Compensation will be cash paid through prolific.co system.
+        </p>
+        <p>
+        <strong>BENEFITS</strong>. There will be no direct benefit to you from these procedures. However, the investigator may learn more about metacognition processes and decision-making. This knowledge may have benefits to society in fields ranging from improving education to decision-making policies in businesses, but these benefits will be indirect.
+        </p>
+        <p>
+        <strong>EXPLANATION</strong>.  The researcher has explained this study to you and answered your questions.  If you have questions about the research or research-related problems, including any adverse events, you may reach Dr. Maria Robinson at maria.robinson@warwick.ac.uk or Daniil Grigorev at daniil.grigorev@warwick.ac.uk
+        </p>
+        <p>
+        <strong>VOLUNTARY NATURE OF PARTICIPATION</strong>.  Participation in research is entirely voluntary.  You may refuse to participate or withdraw at any time without penalty. The alternative to participation is to choose not to participate.
+        </p>
+        <p>
+        <strong>CONFIDENTIALITY</strong>.  Research records will be kept confidential to the extent allowed by law. As with all research, there is also the possibility of loss of confidentiality. Although, we do not aim to store or record personally identifiable data, metadata used by online collecting platform (as prolific) or demographics could indirectly lead to an identification of a participant. Information from participants such as yourself will be identified by a random subject number, which is not associated with your identity, by the researchers, to minimize the potential loss of confidentiality. 
+        </p>
+        <p>
+        Please print a copy of this page for your records.
+        </p>
+        <p style="text-align: center; font-weight: bold; margin-top: 20px;">
+            By clicking "I Agree", you are indicating that you are at least 18 years old, have read this consent form and agree to participate in this research study.
+        </p>
+                `,
     choices: ['I Agree', 'I Do Not Agree'],
     on_finish: function(data){
         if(data.response == 1){
@@ -342,14 +422,61 @@ var consent_trial = {
         }
     }
 };
+var gender_identity = {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: `
+        <div style="text-align: left; max-width: 800px; margin: auto; font-size: 20px;">
+        <p><strong>How do you describe your gender identity?</strong>
+        </p>
+        `,
+    choices: ['Man', 'Woman', 'Non-binary', 'In another way', 'Prefer not to answer']
+};
+var demographics = {
+    type: jsPsychSurveyHtmlForm,
+    html: `
+        <div style="text-align: left; max-width: 800px; margin: auto; font-size: 20px;">
+            <label for="age_input" style="font-weight:bold;">What is your age?</label>
+            <br><br>
+            <input type="number" name="age" id="age_input" min="18" max="100" style="margin-top:5px; padding:5px;" required>
+            <br><br>
+            <label style="font-size: 16px; cursor: pointer;">
+                <input type="checkbox" name="age_prefer_not_say" id="pns_check"> 
+                Prefer not to answer
+            </label>
+            <br><br>
+        </div>
+    `,
+    button_label: 'Continue',
+    
+    // This function runs when the trial loads
+    on_load: function() {
+        const ageInput = document.getElementById('age_input');
+        const pnsCheck = document.getElementById('pns_check');
 
+        // Listen for changes to the checkbox
+        pnsCheck.addEventListener('change', function() {
+            if(this.checked) {
+                // If checked: Disable the text box and remove 'required' so they can submit
+                ageInput.disabled = true;
+                ageInput.required = false;
+                ageInput.value = ""; // Clear any number they might have typed
+                ageInput.style.backgroundColor = "#e0e0e0";
+            } else {
+                // If unchecked: Re-enable the text box and make it required again
+                ageInput.disabled = false;
+                ageInput.required = true;
+                ageInput.style.backgroundColor = "white";
+            }
+        });
+    },
+
+    data: { task: 'demographics' }
+};
 var questionnaire_inst = {
     type: jsPsychInstructions,
             pages: [
-                '<p><strong>Now you will need to answer a set of questions about your metacognition in everyday life</strong></p>' +
-                '<p>Please answer them accurately.</p>' +
-                '<p>This part will take approximately 10 minutes.</p>' +
-                '<p>Thank you for your participation!</p>' 
+                '<p><strong>Now you will be given questionnaires that you will be asked to fill out the best that you can.</strong> These questionnaires contain questions that ask about your feelings, thoughts and behaviours.</p>' +
+                '<p>Some questions ask about negative feelings that you might experience, or negative thoughts you might have – so, some individuals may feel uncomfortable answering these questions. You can skip any questions you don’t want to answer and can quit the study at any point. Should you need assistance, there will also be a link with each survey like the one shown below. Thank you for your participation </p>'
             ],
     show_clickable_nav: true
 };
@@ -380,8 +507,11 @@ var endDebriefing = {
 var timeline = [];
      
 // Consent
+timeline.push(consent_trial_info);
 timeline.push(consent_trial);
-
+// Demographics
+timeline.push(gender_identity);
+timeline.push(demographics);
 // Fullscreen
 timeline.push({ type: jsPsychFullscreen, fullscreen_mode: true });
 
