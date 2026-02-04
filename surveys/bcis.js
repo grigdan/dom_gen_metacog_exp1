@@ -1,10 +1,6 @@
 ﻿/**
 * Beck Cognitive Insight Scale (BCIS)
 *
-* Kroenke, K., Spitzer, R. L., & Williams, J. B. (2001). The PHQ‐9: validity of
-* a brief depression severity measure. Journal of general internal medicine,
-* 16(9), 606-613.
-*
 **/
 
 var bcis = {
@@ -30,7 +26,8 @@ var bcis = {
     "Do not agree at all",
     "Agree slightly",
     "Agree a lot",
-    "Agree completely"
+    "Agree completely",
+    "Prefer not to disclose"
   ],
   reverse: [
     false, false, false, false, false, false, false, false, false,

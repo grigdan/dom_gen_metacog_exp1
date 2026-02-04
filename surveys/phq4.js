@@ -19,7 +19,8 @@ var phq4 = {
     "Not at all",
     "Several days",
     "More than half the days",
-    "Nearly every day"
+    "Nearly every day",
+    "Prefer not to disclose"
   ],
   reverse: [
     false, false, false, false, false, false, false, false, false,

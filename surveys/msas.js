@@ -1,10 +1,5 @@
 ﻿/**
 * Metacognition Self-Assessment Scale (MSAS)
-*
-* Kroenke, K., Spitzer, R. L., & Williams, J. B. (2001). The PHQ‐9: validity of
-* a brief depression severity measure. Journal of general internal medicine,
-* 16(9), 606-613.
-*
 **/
 
 var msas_a = {
@@ -24,7 +19,8 @@ var msas_a = {
     "Rarely", 
     "Sometimes", 
     "Frequently", 
-    "Almost always"
+    "Almost always",
+    "Prefer not to disclose"
     ],
     reverse: [
     false, false, false, false, false, false, false,
@@ -46,7 +42,8 @@ var msas_b = {
     "Rarely", 
     "Sometimes", 
     "Frequently", 
-    "Almost always"
+    "Almost always",
+    "Prefer not to disclose"
     ],
   reverse: [
     false, false, false, 
@@ -68,7 +65,8 @@ var msas_c = {
     "Rarely", 
     "Sometimes", 
     "Frequently", 
-    "Almost always"
+    "Almost always",
+    "Prefer not to disclose"
     ],
   reverse: [
     false, false, false, 
@@ -92,7 +90,8 @@ var msas_d = {
     "Rarely", 
     "Sometimes", 
     "Frequently", 
-    "Almost always"
+    "Almost always",
+    "Prefer not to disclose"
     ],
   reverse: [
     false, false, false, false, false, 
