@@ -111,14 +111,11 @@ var jsPsychContinuousColorWM = (function (jspsych) {
             if (color_degrees.length < trial.set_size) {
                 for (let k = color_degrees.length; k < trial.set_size; k++) color_degrees.push(Math.floor(Math.random() * 360));
             }
-
             // 2. Determine Target
             var target_idx = Math.floor(Math.random() * trial.set_size);
             var target_degree = color_degrees[target_idx];
             // 3. Generate Foil
-            var offset = (Math.random() < 0.5 ? -30 : 30);
-            var foil_degree = (target_degree + 180 + offset + 360) % 360;
-
+            var foil_degree = wrap(target_degree + 180);
             var options = [target_degree, foil_degree];
             options = this.jsPsych.randomization.shuffle(options);
             // 4. RT fix
@@ -127,6 +124,7 @@ var jsPsychContinuousColorWM = (function (jspsych) {
             var trial_data = {
                 task: 'ContinuousWM',
                 set_size: trial.set_size,
+                colors: color_degrees,
                 confidence_timing: trial.confidence_timing,
                 target_degree: target_degree,
                 foil_degree: foil_degree,
@@ -221,19 +219,30 @@ var jsPsychContinuousColorWM = (function (jspsych) {
                 document.getElementById('wmFixation').addEventListener('click', () => {
 
                     document.body.style.cursor = 'none';
-                    drawScene('encoding');
-                    
-                    this.jsPsych.pluginAPI.setTimeout(() => {
-                        
-                        drawScene('delay');
-                        this.jsPsych.pluginAPI.setTimeout(() => {
-                            
-                            document.getElementById('wmFixation').style.display = 'none';
-                            drawScene('probe');
-                            start_time = performance.now();
-                        }, trial.delay_time);
 
-                    }, trial.stimulus_duration);
+                    var fixation_jitter = Math.floor(Math.random() * 100) + 500;
+
+                    this.jsPsych.pluginAPI.setTimeout(() => {
+
+                        document.getElementById('wmFixation').style.display = 'none';
+
+                        // Start Encoding Phase
+                        drawScene('encoding');
+
+                        this.jsPsych.pluginAPI.setTimeout(() => {
+                            // Delay Phase
+                            drawScene('delay');
+
+                            this.jsPsych.pluginAPI.setTimeout(() => {
+                                // Probe Phase
+                                drawScene('probe');
+                                start_time_probe = performance.now();
+                            }, trial.delay_time);
+
+                        }, trial.stimulus_duration);
+
+                    }, fixation_jitter);
+
                 }, { once: true });
             };
 

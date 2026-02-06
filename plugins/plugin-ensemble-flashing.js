@@ -44,7 +44,7 @@ var jsPsychNumerosityEstimationEnsemble = (function (jspsych) {
         .num-img { width: 200px; height: auto; border: 4px solid transparent; }
         .num-keys { font-size: 20px; margin-top: 10px; font-weight: bold; }
         .num-prompt { font-size: 24px; margin-top: 20px; text-align: center; }
-        .feedback-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background: rgba(255,255,255,0.9); z-index: 999; }
+        .feedback-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background: #ffffff; z-index: 999; }
         .feedback-msg { font-size: 50px; font-weight: bold; }
         `;
                 var styleSheet = document.createElement("style");
@@ -94,84 +94,98 @@ var jsPsychNumerosityEstimationEnsemble = (function (jspsych) {
             };
 
             const runAnimationSequence = () => {
-                document.body.style.cursor = 'none';
+
                 var canvas = document.createElement("canvas");
                 canvas.width = trial.canvas_width;
                 canvas.height = trial.canvas_height;
+                canvas.style.backgroundColor = "#E6E6E6";
                 canvas.style.border = "1px solid #ccc";
                 canvas.style.margin = "0 auto";
                 canvas.style.display = "block";
                 display_element.appendChild(canvas);
                 var ctx = canvas.getContext("2d");
 
-                var count1 = Math.round(trial.numerosity * trial.proportion_stim1);
-                var count2 = trial.numerosity - count1;
+                ctx.fillStyle = "black";
+                ctx.font = "50px Arial";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillText("+", trial.canvas_width / 2, trial.canvas_height / 2);
 
-                trial_data.count_stimulus1 = count1;
-                trial_data.count_stimulus2 = count2;
+                document.body.style.cursor = 'none';
+                var jitter = Math.floor(Math.random() * 100) + 500;
+                this.jsPsych.pluginAPI.setTimeout(() => {
 
-                var rows = trial.grid_rows;
-                var cols = trial.grid_cols;
-                if (rows * cols < trial.numerosity) {
-                    var root = Math.ceil(Math.sqrt(trial.numerosity));
-                    rows = root; cols = root;
-                }
+                    // Clear the fixation cross before drawing dots
+                    ctx.clearRect(0, 0, trial.canvas_width, trial.canvas_height);
 
-                var cellWidth = trial.canvas_width / cols;
-                var cellHeight = trial.canvas_height / rows;
-                var itemSize = Math.min(cellWidth, cellHeight) * 0.7;
-                var maxJitterX = cellWidth - itemSize;
-                var maxJitterY = cellHeight - itemSize;
+                    var count1 = Math.round(trial.numerosity * trial.proportion_stim1);
+                    var count2 = trial.numerosity - count1;
+                    trial_data.count_stimulus1 = count1;
+                    trial_data.count_stimulus2 = count2;
 
-                var allGridCells = [];
-                for (let r = 0; r < rows; r++) {
-                    for (let c = 0; c < cols; c++) {
-                        allGridCells.push({ baseX: (c * cellWidth), baseY: (r * cellHeight) });
+                    var rows = trial.grid_rows;
+                    var cols = trial.grid_cols;
+                    if (rows * cols < trial.numerosity) {
+                        var root = Math.ceil(Math.sqrt(trial.numerosity));
+                        rows = root; cols = root;
                     }
-                }
 
-                const loadImg = (src) => {
-                    return new Promise((resolve) => {
-                        if (!src) resolve(null);
-                        const img = new Image();
-                        img.onload = () => resolve(img);
-                        img.onerror = () => resolve(null);
-                        img.src = src;
-                    });
-                };
+                    var cellWidth = trial.canvas_width / cols;
+                    var cellHeight = trial.canvas_height / rows;
+                    var itemSize = Math.min(cellWidth, cellHeight) * 0.7;
+                    var maxJitterX = cellWidth - itemSize;
+                    var maxJitterY = cellHeight - itemSize;
 
-                Promise.all([loadImg(trial.stimulus), loadImg(trial.stimulus2)]).then((images) => {
-                    const img1 = images[0];
-                    const img2 = images[1];
-                    const frameDuration = trial.stimulus_duration / trial.number_of_frames;
-                    let currentFrame = 0;
-
-                    const drawFrame = () => {
-                        if (currentFrame >= trial.number_of_frames) {
-                            clearInterval(animationInterval);
-                            showChoiceScreen();
-                            return;
+                    var allGridCells = [];
+                    for (let r = 0; r < rows; r++) {
+                        for (let c = 0; c < cols; c++) {
+                            allGridCells.push({ baseX: (c * cellWidth), baseY: (r * cellHeight) });
                         }
-                        ctx.clearRect(0, 0, trial.canvas_width, trial.canvas_height);
-                        var availableCells = this.jsPsych.randomization.shuffle([...allGridCells]);
-                        var cellsForStim1 = availableCells.slice(0, count1);
-                        var cellsForStim2 = availableCells.slice(count1, count1 + count2);
+                    }
 
-                        if (img1 && count1 > 0) {
-                            for (let cell of cellsForStim1) {
-                                ctx.drawImage(img1, cell.baseX + Math.random() * maxJitterX, cell.baseY + Math.random() * maxJitterY, itemSize, itemSize);
-                            }
-                        }
-                        if (img2 && count2 > 0) {
-                            for (let cell of cellsForStim2) {
-                                ctx.drawImage(img2, cell.baseX + Math.random() * maxJitterX, cell.baseY + Math.random() * maxJitterY, itemSize, itemSize);
-                            }
-                        }
-                        currentFrame++;
+                    const loadImg = (src) => {
+                        return new Promise((resolve) => {
+                            if (!src) resolve(null);
+                            const img = new Image();
+                            img.onload = () => resolve(img);
+                            img.onerror = () => resolve(null);
+                            img.src = src;
+                        });
                     };
-                    drawFrame();
-                    var animationInterval = setInterval(drawFrame, frameDuration);
-                });
+
+                    Promise.all([loadImg(trial.stimulus), loadImg(trial.stimulus2)]).then((images) => {
+                        const img1 = images[0];
+                        const img2 = images[1];
+                        const frameDuration = trial.stimulus_duration / trial.number_of_frames;
+                        let currentFrame = 0;
+
+                        const drawFrame = () => {
+                            if (currentFrame >= trial.number_of_frames) {
+                                clearInterval(animationInterval);
+                                showChoiceScreen();
+                                return;
+                            }
+                            ctx.clearRect(0, 0, trial.canvas_width, trial.canvas_height);
+                            var availableCells = this.jsPsych.randomization.shuffle([...allGridCells]);
+                            var cellsForStim1 = availableCells.slice(0, count1);
+                            var cellsForStim2 = availableCells.slice(count1, count1 + count2);
+
+                            if (img1 && count1 > 0) {
+                                for (let cell of cellsForStim1) {
+                                    ctx.drawImage(img1, cell.baseX + Math.random() * maxJitterX, cell.baseY + Math.random() * maxJitterY, itemSize, itemSize);
+                                }
+                            }
+                            if (img2 && count2 > 0) {
+                                for (let cell of cellsForStim2) {
+                                    ctx.drawImage(img2, cell.baseX + Math.random() * maxJitterX, cell.baseY + Math.random() * maxJitterY, itemSize, itemSize);
+                                }
+                            }
+                            currentFrame++;
+                        };
+                        drawFrame();
+                        var animationInterval = setInterval(drawFrame, frameDuration);
+                    });
+                }, jitter);
             };
 
             const showChoiceScreen = () => {
