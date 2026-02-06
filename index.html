@@ -48,11 +48,7 @@
 var jsPsych = initJsPsych({
     show_progress_bar: true,
     auto_update_progress_bar: true,
-    message_progress_bar: "Progress on entire study:",
-    on_finish: function() {
-        // Optional: Local save or redirect
-        // window.location.href = "https://ucsd.sona-systems.com...";
-    }
+    message_progress_bar: "Progress on entire study:"
 });
 
 // ---------------------------------------------------------
@@ -207,7 +203,7 @@ function createNumerosityBlock(numTrials, timing, isTraining) {
 function createWMBlock(numTrials, timing, isTraining) {
     var block_timeline = [];
     var block_label = isTraining ? 'WM_Training' : 'WM_Main';
-    // Map 'before'/'after' simple strings to plugin specific strings
+    
     var plugin_timing = (timing === 'before') ? 'before_stimuli' : 'after_probe';
 
     for(let i=0; i<numTrials; i++) {
@@ -217,7 +213,7 @@ function createWMBlock(numTrials, timing, isTraining) {
             num_placeholders: 5,
             confidence_timing: plugin_timing,
             feedback: isTraining,
-            display_time: 500,
+            display_time: 350,
             min_difference: 30,
             color_wheel_num_options: 2, 
             data: { 
@@ -232,19 +228,119 @@ function createWMBlock(numTrials, timing, isTraining) {
 // Helper to bundle Instructions + Training + Main + Break
 function buildTaskUnit(taskName, timing) {
     var unit = [];
-    var isPre = (timing === 'before');
-    var timeLabel = isPre ? "You will need to rate your confidence of your judgment BEFORE the trial" : "You will need to rate your confidence of your judgment AFTER the trial";
-    var task_block_inst_ = taskName === 'WM' ? 'Welcome. In this memory task, you will be asked to remember a set of coloured circles. After a brief delay, you will need to choose the previously seen color (position of which will be highlighted with thick black circle) from two alternatives. TO START EACH TRIAL YOU WILL NEED TO CLICK A BLACK CROSS IN THE CENTER.' : 'Welcome. In this task, you will be asked to judge which type of berry is higher in numerosity on the display presented. After a quick break, you will see two possible options to choose from (raspberries or blueberries); you will need to select the one you think has more fruit on the screen.';
     // 1. Instructions
+    var task_html = '';
+
+    if (taskName === 'WM') {
+        // --- WORKING MEMORY INSTRUCTIONS ---
+        task_html = `
+            <div style="max-width: 800px; margin: auto; text-align: left; line-height: 1.6;">
+                <h2 style="text-align: center;">Working Memory Task</h2>
+
+                <p>Welcome. In this memory task, you will be asked to remember the color and spatial locations of <strong>${WM_SET_SIZE} circles</strong>.</p>
+                <p>You will start each trial, when you are ready, by clicking on a fixation cross presented in the center of the screen, which will look like this:</p>
+                <div style="text-align: center; margin: 20px 0;">
+                    <img src="assets/fixation_cross_wm.png" style="width: 400px; border: 2px solid #333;">
+                    <p style="font-size: 14px; color: #555;">(Fixation Cross)</p>
+                </div>
+                <p>The colored circles will be shown very quickly, so make sure you are really ready when you click on the fixaction cross. </p>
+                <p>After you click on the fixation cross you will be shown ${WM_SET_SIZE} colored circles. Here is one example of ${WM_SET_SIZE} circles with different colors:</p>
+                <div style="text-align: center; margin: 20px 0;">
+                    <img src="assets/colors_targets_wm.png" style="width: 400px; border: 2px solid #333;">
+                    <p style="font-size: 14px; color: #555;">(Target Colors)</p>
+                </div>                
+                <p>Your task is to remember the circles and their spatial locations the best that you can.</p>
+                <p>After a brief delay, you will need to choose the previously seen color (the position of which will be highlighted with a thick black circle) from two alternatives:</p>
+                <div style="text-align: center; margin: 20px 0;">
+                    <img src="assets/probe_target_wm.png" style="width: 400px; border: 2px solid #333;">
+                    <p style="font-size: 14px; color: #555;">(Task Probe)</p>
+                </div>
+                <p>Here you would need to click on the orange color.</p>
+                <p><strong>To start each trial, you must click the BLACK CROSS in the center of the screen.</strong></p>
+            </div>
+        `;
+    } else {
+        // --- NUMEROSITY INSTRUCTIONS ---
+        task_html = `
+            <div style="max-width: 800px; margin: auto; text-align: left; line-height: 1.6;">
+                <h2 style="text-align: center;">Numerosity Task</h2>
+
+                <p>Welcome. In this task, you will be asked to judge <strong>which type of berry is higher in number</strong>.</p>
+                <p>Each trial will start automatically with a fixation cross presented in the center of the screen, which will look like this:</p>
+                <div style="text-align: center; margin: 20px 0;">
+                    <img src="assets/fixation_cross_nm.png" style="width: 400px; border: 2px solid #333;">
+                    <p style="font-size: 14px; color: #555;">(Fixation Cross)</p>
+                </div>
+                <p>The berries will be shown very quickly, so make sure you are paying attention. </p>
+                <p>After the fixation cross you will be shown the set of berries. The proportion of berries presented will be the same, however their location will change during the trial. Here is the example:</p>
+                <div style="text-align: center; margin: 20px 0;">
+                    <img src="assets/targets_nm.png" style="width: 400px; border: 2px solid #333;">
+                    <p style="font-size: 14px; color: #555;">(Set of Berries)</p>
+                </div>
+                <p>Your task is to remember which of the two berries had the highest number.</p>
+                <p>You will need to choose from two alternatives (red and dark blue). You need to select the one you think had more fruit on the screen.</p>
+                <div style="text-align: center; margin: 20px 0;">
+                    <img src="assets/probe_nm.png" style="width: 400px; border: 2px solid #333;">
+                    <p style="font-size: 14px; color: #555;">(Task Probe)</p>
+                </div>
+                <p>Here you would need to click on red berry.</p>
+            </div>
+        `;
+    }
+
     unit.push({
-        type: jsPsychInstructions,
-        pages: [
-            `<p><strong>${taskName.toUpperCase()} TASK - ${timeLabel}</strong></p>
-             <p>${task_block_inst_}</p>
-             <p>We will start with ${TRAINING_TRIALS} practice trials with feedback.</p>
-             <p>Click Next to begin training.</p>`
-        ],
-        show_clickable_nav: true
+        type: jsPsychHtmlButtonResponse,
+        stimulus: task_html,
+        choices: ['Next'],
+        data: { task: 'instructions_task_desc', task_name: taskName }
+    });
+
+
+    // --- CONFIDENCE INSTRUCTIONS ---
+    var conf_html = '';
+    var conf_color = timing === 'before' ? '#D32F2F' : '#1976D2'; // Red for before, Blue for after
+    var time_text = timing === 'before' ? 'BEFORE' : 'AFTER';
+
+    conf_html = ``;
+
+    if (timing === 'before') {
+        // --- PROSPECTIVE INSTRUCTIONS ---
+        conf_html = `<div style="max-width: 700px; margin: auto; text-align: center; line-height: 1.6;">
+            <h2>Confidence Rating</h2>
+            <p>You will be shown a scale that looks like this.  We ask you the before you do the trial, you think carefully about how you feel and how confident you are that you will make the correct response on that specific trial. </p>
+            <div style="text-align: center; margin: 20px 0;">
+            <img src="assets/prosp_conf.png" style="width: 400px; border: 2px solid #333;">
+            <p style="font-size: 14px; color: #555;">(Confidence Scale)</p>
+            </div>
+            <p>For example, sometimes you might feel that you may not perform as well, so your confidence in your accuracy may be lower. Other times, you may feel that you’ll perform very well and your confidence in your accuracy will be high. You may also experience moderate levels of confidence.  </p>
+            <p>We ask that you please think carefully about your confidence on each trial before you begin. Thank you for your participation</p>
+
+            <p>We will start with ${TRAINING_TRIALS} practice trials with feedback.</p>
+        </div>
+    `;
+    } else {
+        // --- RETROSPECTIVE INSTRUCTIONS ---
+        conf_html = `<div style="max-width: 700px; margin: auto; text-align: center; line-height: 1.6;">
+            <h2>Confidence Rating</h2>
+            
+            <p>You will be shown a scale that looks like this. We ask you to think carefully about how confident you are that you made the correct response, and use this scale to report on your confidence.</p>
+            <div style="text-align: center; margin: 20px 0;">
+            <img src="assets/retrosp_conf.png" style="width: 400px; border: 2px solid #333;">
+            <p style="font-size: 14px; color: #555;">(Confidence Scale)</p>
+            </div>
+            <p>For instance, if you feel that you were guessing, you should choose the left hand side of the confidence scale, whereas if you’re certain choose the right hand.  If your confidence is moderate, choose the mid point of the scale. </p>
+            <p>Again, we ask that you please think carefully about your confidence when making the responses, and thanks for your participation.”</p>
+
+            <p>We will start with ${TRAINING_TRIALS} practice trials with feedback.</p>
+        </div>
+    `;
+    }
+
+    unit.push({
+        type: jsPsychHtmlButtonResponse,
+        stimulus: conf_html,
+        choices: ['Start Practice'],
+        data: { task: 'instructions_confidence', timing: timing }
     });
 
     // 2. Training Block
@@ -304,17 +400,32 @@ global_phases = jsPsych.randomization.shuffle(global_phases);
 // ---------------------------------------------------------
 // Consent Form
 // ---------------------------------------------------------
+var consent_general_info = {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: `
+    <div style="text-align: left; max-width: 800px; margin: auto; font-size: 16px;">
+    <h3>Information sheet and consent</h3>
+    <p>
+        <strong>Welcome.</strong>
+    </p>
+    <p>
+        In this task, you will be asked to complete two simple tasks. In one task you’ll need to remember colors over a brief period of time. In a second task, you will need to judge the relative number of a set of objects. During each task, you will also be asked questions about your confidence.
+    </p>
+    <p>
+        At the end of the study you will also be asked to fill out a set of questionnaires. <strong>These questionnaires contain questions that ask about your metacognitive processes in everyday life situations. Some individuals may feel uncomfortable answering these questions.</strong> You can skip any questions you don’t want to answer and can quit the study at any point. If at any point you feel distress, and require assistance please contact the University’s well-being and <a href="https://warwick.ac.uk/services/wss/" title="support">support</a>. 
+    </p>
+    <p>
+    Together, the study should take approximately 45-50 minutes.
+    </p>
+    </div>
+    `,
+    choices: ['Next'],
+};
 var consent_trial_info = {
     type: jsPsychHtmlButtonResponse,
     stimulus: `
     <div style="text-align: left; max-width: 800px; margin: auto; font-size: 16px;">
         <h3>Information sheet and consent</h3>
-        <p>
-            <strong>Welcome.</strong> In this task, you will be asked to remember simple stimuli. In the memory task, you will be presented with a set of stimuli. After a brief delay, you will need to choose the previously seen stimulus from two alternatives. In the perception task, you will be presented with two different sets of stimuli simultaneously. After a brief delay, you will need to choose one of the two sets in which you think more stimuli had been shown.
-        </p>
-        <p>
-            You will complete two less than 10-minute blocks of each task (memory and perception). In between blocks, you will be given questionnaires that you will be asked to fill out the best that you can. <strong>These questionnaires contain questions that ask about your metacognitive processes in everyday life situations. Some individuals may feel uncomfortable answering these questions.</strong> You can skip any questions you don’t want to answer and can quit the study at any point. If at any point you feel distress, and require assistance please contact the University’s well-being and <a href="https://warwick.ac.uk/services/wss/" title="support">support</a>.
-        </p>
         <p>
             Please read the following and indicate your agreement by continuing to the next page to start the practice trials:
         </p>
@@ -476,7 +587,7 @@ var questionnaire_inst = {
     type: jsPsychInstructions,
             pages: [
                 '<p><strong>Now you will be given questionnaires that you will be asked to fill out the best that you can.</strong> These questionnaires contain questions that ask about your feelings, thoughts and behaviours.</p>' +
-                '<p>Some questions ask about negative feelings that you might experience, or negative thoughts you might have – so, some individuals may feel uncomfortable answering these questions. You can skip any questions you don’t want to answer and can quit the study at any point. Should you need assistance, there will also be a link with each survey like the one shown below. Thank you for your participation </p>'
+                '<p>Some questions ask about negative feelings that you might experience, or negative thoughts you might have – so, some individuals may feel uncomfortable answering these questions. You can skip any questions you don’t want to answer and can quit the study at any point. Should you need assistance, there will also be a link with each survey like the one shown below. Thank you for your participation! </p>'
             ],
     show_clickable_nav: true
 };
@@ -493,7 +604,7 @@ const save_data = {
 var endDebriefing = {
             type: jsPsychInstructions,
             pages: [
-                `p>Thank you very much for your participation. The purpose of this study was to examine how metacognitive judgments change depending on the type of task and to also investigate individual differences in variation. We are focusing on how individual differences in metacognitive insight within the general population influence the calibration of confidence judgments across perceptual and memory tasks. We plan to utilize a combination of computational models to quantify potential individual differences in behavioral performance during the task.
+                `Thank you very much for your participation. The purpose of this study was to examine how metacognitive judgments change depending on the type of task and to also investigate individual differences in variation. We are focusing on how individual differences in metacognitive insight within the general population influence the calibration of confidence judgments across perceptual and memory tasks. We plan to utilize a combination of computational models to quantify potential individual differences in behavioral performance during the task.
                 <p><b>Your data has been saved</b> on our servers, so you are free to close this window whenever you want. Thanks again!</p>`
             ],
             button_label_next: "Clear this screen",
@@ -507,8 +618,7 @@ var endDebriefing = {
 var timeline = [];
      
 // Consent
-timeline.push(consent_trial_info);
-timeline.push(consent_trial);
+timeline.push(consent_general_info, consent_trial_info, consent_trial);
 // Demographics
 timeline.push(gender_identity);
 timeline.push(demographics);
