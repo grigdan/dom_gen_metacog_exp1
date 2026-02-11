@@ -69,27 +69,82 @@ var jsPsychNumerosityEstimationEnsemble = (function (jspsych) {
             };
 
             const showConfidence = (callback) => {
-                display_element.innerHTML = `
-            <div class="slider-container" style="display:block">
-                <p style="font-size:24px; margin-bottom:20px;">
-                   ${trial.confidence_timing === 'before' ? "How likely you are to remember a higher numerosity?" : "How likely that you did remember a higher numerosity?"}
-                </p>
-                <input type="range" min="0" max="100" value="50" class="jspsych-slider" id="confRange">
-                <div class="slider-labels">
-                    <span>0% confident<br>(Guessing)</span>
-                    <span>50% confident<br>(Uncertain)</span>
-                    <span>100% confident<br>(Certain)</span>
-                </div>
-                <button class="slider-btn" id="btnSubmitConf">Submit</button>
-            </div>
-          `;
+            display_element.innerHTML = `
+                <div class="confidence-container" style="max-width: 800px; margin: 50px auto; text-align: center;">
+                
+                    <p style="font-size:24px; margin-bottom:40px;">
+                    ${trial.confidence_timing === 'before' ? "How confident are you that you WILL choose correctly?" : "How confident are you that you DID choose correctly?"}
+                    </p>
 
-                var start_time_conf = performance.now();
-                document.getElementById('btnSubmitConf').addEventListener('click', () => {
-                    trial_data.confidence = document.getElementById('confRange').value;
-                    trial_data.rt_conf = performance.now() - start_time_conf;
-                    display_element.innerHTML = '';
-                    callback();
+                <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 10px;">
+                    ${[0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map(val => 
+                        `<button class="conf-btn" data-value="${val}" 
+                                 style="
+                                    width: 55px; 
+                                    height: 45px;
+                                    padding: 0;
+                                    display: flex; 
+                                    align-items: center; 
+                                    justify-content: center;
+                                    font-size: 15px; 
+                                    cursor: pointer; 
+                                    border: 1px solid #ccc; 
+                                    background-color: #f0f0f0; 
+                                    border-radius: 5px;
+                                    transition: all 0.2s;
+                                 ">
+                            ${val}%
+                         </button>`
+                    ).join('')}
+                </div>
+
+                <div style="display: flex; justify-content: space-between; font-size: 14px; color: #555; margin-bottom: 30px; padding: 0 5px;">
+                    <span style="text-align: center;">Guessing</span>
+                    <span style="text-align: center;">Uncertain</span>
+                    <span style="text-align: center;">Certain</span>
+                </div>
+
+                <button id="btnSubmitConf" class="jspsych-btn" disabled 
+                        style="padding: 12px 30px; font-size: 18px; opacity: 0.5; cursor: not-allowed;">
+                    Submit Confidence
+                </button>
+                </div>
+            `;
+            var selectedValue = null;
+            var start_time_conf = performance.now();
+          
+            const buttons = display_element.querySelectorAll('.conf-btn');
+            const submitBtn = document.getElementById('btnSubmitConf');
+            
+            buttons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    
+                    buttons.forEach(b => {
+                        b.style.backgroundColor = '#f0f0f0';
+                        b.style.color = 'black';
+                        b.style.border = '1px solid #ccc';
+                    });
+                  
+                    this.style.backgroundColor = '#2196F3'; 
+                    this.style.color = 'white';
+                    this.style.border = '1px solid #1976D2';
+
+                    
+                    selectedValue = parseInt(this.getAttribute('data-value'));
+                    submitBtn.disabled = false;
+                    submitBtn.style.opacity = '1';
+                    submitBtn.style.cursor = 'pointer';
+                });
+            });
+            
+            submitBtn.addEventListener('click', () => {
+              if (selectedValue !== null) {
+                  trial_data.confidence = selectedValue;
+                  trial_data.rt_conf = performance.now() - start_time_conf;
+
+                  display_element.innerHTML = '';
+                  callback();
+                    }            
                 });
             };
 
@@ -115,7 +170,7 @@ var jsPsychNumerosityEstimationEnsemble = (function (jspsych) {
                 var jitter = Math.floor(Math.random() * 100) + 500;
                 this.jsPsych.pluginAPI.setTimeout(() => {
 
-                    // Clear the fixation cross before drawing dots
+                    
                     ctx.clearRect(0, 0, trial.canvas_width, trial.canvas_height);
 
                     var count1 = Math.round(trial.numerosity * trial.proportion_stim1);
@@ -220,7 +275,7 @@ var jsPsychNumerosityEstimationEnsemble = (function (jspsych) {
                         checkFeedback();
                     }
                 };
-                // Attach listeners
+                
                 document.getElementById('choice-left').addEventListener('click', () => handleResponse('left'));
                 document.getElementById('choice-right').addEventListener('click', () => handleResponse('right'));
             };

@@ -131,26 +131,59 @@ var jsPsychContinuousColorWM = (function (jspsych) {
                 correct_degree: target_degree
             };
 
-            display_element.innerHTML = `
-        <div class="wm-container" id="wmStage">
-            <div id="wmFixation" class="wm-fixation">+</div>
-            <div id="wmItems"></div>
-        </div>
-        
-        <div class="slider-container" id="wmSlider">
-            <p style="font-size:24px; margin-bottom:20px;">
-            ${trial.confidence_timing === 'before_stimuli' ? "How likely are you to remember the target?" : "How likely that you did remember the target?"}
-            </p>
-            <input type="range" min="0" max="100" value="50" class="jspsych-slider" id="confRange">
-            <div class="slider-labels">
-                <span>0% confident<br>(Guessing)</span>
-                <span>50% confident<br>(Uncertain)</span>
-                <span>100% confident<br>(Certain)</span>
-            </div>
-            <button class="slider-btn" id="btnSubmitConf">Submit</button>
-        </div>
-      `;
 
+            const task_html = `
+                <div id="wmStage" class="wm-container">
+                    <div id="wmFixation" class="wm-fixation">+</div>
+                    <div id="wmItems"></div>
+                </div>
+            `;
+
+            const confidence_html = `
+                <div class="confidence-container" style = "max-width: 800px; margin: 50px auto; text-align: center;">
+                
+                    <p style="font-size:24px; margin-bottom:40px;">
+                    ${trial.confidence_timing === 'before_stimuli' ? "How confident are you that you WILL choose correctly?" : "How confident are you that you DID choose correctly?"}
+                    </p>
+
+                <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 10px;">
+                    ${[0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map(val => 
+                        `<button class="conf-btn" data-value="${val}" 
+                                 style="
+                                    width: 55px; 
+                                    height: 45px;
+                                    padding: 0;
+                                    display: flex; 
+                                    align-items: center; 
+                                    justify-content: center;
+                                    font-size: 15px; 
+                                    cursor: pointer; 
+                                    border: 1px solid #ccc; 
+                                    background-color: #f0f0f0; 
+                                    border-radius: 5px;
+                                    transition: all 0.2s;
+                                 ">
+                            ${val}%
+                         </button>`
+                    ).join('')}
+                </div>
+
+                <div style="display: flex; justify-content: space-between; font-size: 14px; color: #555; margin-bottom: 30px; padding: 0 5px;">
+                    <span style="text-align: center;">Guessing</span>
+                    <span style="text-align: center;">Uncertain</span>
+                    <span style="text-align: center;">Certain</span>
+                </div>
+
+                <button id="btnSubmitConf" class="jspsych-btn" disabled 
+                        style="padding: 12px 30px; font-size: 18px; opacity: 0.5; cursor: not-allowed;">
+                    Submit Confidence
+                </button>
+                </div>
+            `;
+
+            const loadTaskHTML = () => {
+                display_element.innerHTML = task_html;
+            };
             // Trial Canvases
             // 'encoding' (circles), 'delay' (no colors), 'probe' (target)
             const drawScene = (phase) => {
@@ -158,6 +191,9 @@ var jsPsychContinuousColorWM = (function (jspsych) {
                     document.body.style.cursor = 'default';
                 }
                 
+                const itemsContainer = document.getElementById('wmItems');
+                if (!itemsContainer) return;
+
                 var html = '';
                 var cx = 400, cy = 300;
 
@@ -195,7 +231,7 @@ var jsPsychContinuousColorWM = (function (jspsych) {
                     html += `<div class="wm-item wm-choice" data-degree="${options[1]}" style="left:${cx + gap}px; top:${cy - choiceWidth / 2}px; width:${choiceWidth}px; height:${choiceWidth}px; background-color:${opt2_col}; cursor:pointer; border: 2px black;"></div>`;
                 }
 
-                document.getElementById('wmItems').innerHTML = html;
+                itemsContainer.innerHTML = html;
 
                 if (phase === 'probe') {
                     document.querySelectorAll('.wm-choice').forEach(el => {
@@ -203,20 +239,15 @@ var jsPsychContinuousColorWM = (function (jspsych) {
                     });
                 }
             };
-            // Assemble trial structure
-            const startSequence = () => {
-                if (trial.confidence_timing === 'before_stimuli') {
-                    runSliderPhase(runMemoryPhase);
-                } else {
-                    runMemoryPhase();
-                }
-            };
 
             const runMemoryPhase = () => {
-                document.getElementById('wmStage').style.display = 'block';
-                document.getElementById('wmFixation').style.display = 'block';
+                loadTaskHTML(); 
+
+                const stage = document.getElementById('wmStage');
+                const fixation = document.getElementById('wmFixation');
+                fixation.style.display = 'block';
                 
-                document.getElementById('wmFixation').addEventListener('click', () => {
+                fixation.addEventListener('click', () => {
 
                     document.body.style.cursor = 'none';
 
@@ -224,7 +255,7 @@ var jsPsychContinuousColorWM = (function (jspsych) {
 
                     this.jsPsych.pluginAPI.setTimeout(() => {
 
-                        document.getElementById('wmFixation').style.display = 'none';
+                        fixation.style.display = 'none';
 
                         // Start Encoding Phase
                         drawScene('encoding');
@@ -263,27 +294,55 @@ var jsPsychContinuousColorWM = (function (jspsych) {
             };
 
             const runSliderPhase = (callback) => {
-                document.getElementById('wmStage').style.display = 'none';
-                var sliderDiv = document.getElementById('wmSlider');
-                sliderDiv.style.display = 'block';
+                display_element.innerHTML = confidence_html;
 
-                var range = document.getElementById('confRange');
-                var btn = document.getElementById('btnSubmitConf');
-
+                var selectedValue = null;
                 var start_time_conf = performance.now();
+          
+                const buttons = display_element.querySelectorAll('.conf-btn');
+                const submitBtn = document.getElementById('btnSubmitConf');
 
-                btn.onclick = () => { 
-                    trial_data.confidence = range.value;
-                    trial_data.rt_conf = performance.now() - start_time_conf;
-                    sliderDiv.style.display = 'none';
-                    callback();
-                };
+                buttons.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                    
+                    buttons.forEach(b => {
+                        b.style.backgroundColor = '#f0f0f0';
+                        b.style.color = 'black';
+                        b.style.border = '1px solid #ccc';
+                        b.style.transform = 'scale(1)'; 
+                    });
+                  
+                    
+                    this.style.backgroundColor = '#2196F3'; 
+                    this.style.color = 'white';
+                    this.style.border = '1px solid #1976D2';
+                    this.style.transform = 'scale(1.1)'; 
+
+
+                    selectedValue = parseInt(this.getAttribute('data-value'));
+                    submitBtn.disabled = false;
+                    submitBtn.style.opacity = '1';
+                    submitBtn.style.cursor = 'pointer';
+                    });
+                });
+                submitBtn.addEventListener('click', () => {
+                    if (selectedValue !== null) {
+                        trial_data.confidence = selectedValue;
+                        trial_data.rt_conf = performance.now() - start_time_conf;
+
+                        display_element.innerHTML = '';
+                        callback();
+                    }
+                });
             };
 
             const handleFeedback = () => {
                 document.body.style.cursor = 'default';
                 if (trial.feedback) {
+                    display_element.innerHTML = task_html;
                     document.getElementById('wmStage').style.display = 'block';
+                    document.getElementById('wmFixation').style.display = 'none';
+                    
                     var msg = trial_data.response_correct ? "<span style='color:green'>CORRECT</span>" : "<span style='color:red'>INCORRECT</span>";
                     document.getElementById('wmItems').innerHTML = `<div class='wm-feedback'>${msg}</div>`;
 
@@ -294,8 +353,13 @@ var jsPsychContinuousColorWM = (function (jspsych) {
                     this.jsPsych.finishTrial(trial_data);
                 }
             };
+            loadTaskHTML();
 
-            startSequence();
+            if (trial.confidence_timing === 'before_stimuli') {
+                runSliderPhase(runMemoryPhase);
+            } else {
+                runMemoryPhase();
+            }
         }
     }
     ContinuousColorWMPlugin.info = info;
