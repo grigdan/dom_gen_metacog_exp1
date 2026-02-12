@@ -130,7 +130,9 @@ var jsPsychContinuousColorWM = (function (jspsych) {
                 foil_degree: foil_degree,
                 correct_degree: target_degree
             };
-
+            for (let i = 0; i < color_degrees.length; i++) {
+                trial_data['color_' + (i + 1)] = color_degrees[i]; 
+            }
 
             const task_html = `
                 <div id="wmStage" class="wm-container">
@@ -170,7 +172,7 @@ var jsPsychContinuousColorWM = (function (jspsych) {
 
                 <div style="display: flex; justify-content: space-between; font-size: 14px; color: #555; margin-bottom: 30px; padding: 0 5px;">
                     <span style="text-align: center;">Guessing</span>
-                    <span style="text-align: center;">Uncertain</span>
+                    <span style="text-align: center;">Somewhat Uncertain</span>
                     <span style="text-align: center;">Certain</span>
                 </div>
 
@@ -184,6 +186,25 @@ var jsPsychContinuousColorWM = (function (jspsych) {
             const loadTaskHTML = () => {
                 display_element.innerHTML = task_html;
             };
+            
+            const showStartScreen = (callback) => {
+                display_element.innerHTML = `
+                    <div style="
+                        position: absolute; 
+                        top: 50%; 
+                        left: 50%; 
+                        transform: translate(-50%, -50%); 
+                        font-size: 32px; 
+                        font-weight: bold;
+                        color: black;">
+                        TRIAL STARTS
+                    </div>
+                `;
+                this.jsPsych.pluginAPI.setTimeout(() => {
+                    callback();
+                }, 350);
+            };
+
             // Trial Canvases
             // 'encoding' (circles), 'delay' (no colors), 'probe' (target)
             const drawScene = (phase) => {
@@ -353,13 +374,19 @@ var jsPsychContinuousColorWM = (function (jspsych) {
                     this.jsPsych.finishTrial(trial_data);
                 }
             };
-            loadTaskHTML();
+            
+            const beginTaskFlow = () => {
+                
+                loadTaskHTML(); 
 
-            if (trial.confidence_timing === 'before_stimuli') {
-                runSliderPhase(runMemoryPhase);
-            } else {
-                runMemoryPhase();
-            }
+                if (trial.confidence_timing === 'before_stimuli') {
+                    runSliderPhase(runMemoryPhase);
+                } else {
+                    runMemoryPhase();
+                }
+            };
+
+            showStartScreen(beginTaskFlow);
         }
     }
     ContinuousColorWMPlugin.info = info;

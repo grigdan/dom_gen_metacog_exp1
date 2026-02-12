@@ -59,7 +59,7 @@ var jsPsychNumerosityEstimationEnsemble = (function (jspsych) {
                 task: 'numerosity_2afc',
                 confidence_timing: trial.confidence_timing
             };
-
+            
             const startTrial = () => {
                 if (trial.confidence_timing === 'before') {
                     showConfidence(runAnimationSequence);
@@ -100,7 +100,7 @@ var jsPsychNumerosityEstimationEnsemble = (function (jspsych) {
 
                 <div style="display: flex; justify-content: space-between; font-size: 14px; color: #555; margin-bottom: 30px; padding: 0 5px;">
                     <span style="text-align: center;">Guessing</span>
-                    <span style="text-align: center;">Uncertain</span>
+                    <span style="text-align: center;">Somewhat Uncertain</span>
                     <span style="text-align: center;">Certain</span>
                 </div>
 
@@ -146,6 +146,15 @@ var jsPsychNumerosityEstimationEnsemble = (function (jspsych) {
                   callback();
                     }            
                 });
+            };
+            
+            const showStartScreen = (callback) => {
+            display_element.innerHTML = `
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 32px; font-weight: bold;">
+                TRIAL STARTS
+            </div>
+            `;
+            this.jsPsych.pluginAPI.setTimeout(callback, 350);
             };
 
             const runAnimationSequence = () => {
@@ -299,7 +308,7 @@ var jsPsychNumerosityEstimationEnsemble = (function (jspsych) {
                 this.jsPsych.finishTrial(trial_data);
             };
 
-            startTrial();
+            showStartScreen(startTrial);
         }
     }
     NumerosityEstimationPlugin.info = info;
