@@ -55,9 +55,9 @@ var jsPsych = initJsPsych({
 // SETTINGS
 // ---------------------------------------------------------
 const TRAINING_TRIALS = 5; 
-const MAIN_TRIALS = 70;     // 
-const WM_SET_SIZE = 5;
-const NUM_FIXED = 121;       // Fixed numerosity dots
+const MAIN_TRIALS = 5;      
+const WM_SET_SIZE = 6;
+const NUM_FIXED = 121;       
 const IMG_A = "assets/black-berry-dark.png";
 const IMG_B = "assets/raspberry.png";
 
@@ -210,7 +210,7 @@ function createWMBlock(numTrials, timing, isTraining) {
         block_timeline.push({
             type: jsPsychContinuousColorWM,
             set_size: WM_SET_SIZE,
-            num_placeholders: 5,
+            num_placeholders: 6,
             confidence_timing: plugin_timing,
             feedback: isTraining,
             stimulus_duration: 350,
@@ -255,7 +255,7 @@ function buildTaskUnit(taskName, timing) {
                     <img src="assets/probe_target_wm.png" style="width: 400px; border: 2px solid #333;">
                     <p style="font-size: 14px; color: #555;">(Task Probe)</p>
                 </div>
-                <p>Here you would need to click on the orange color.</p>
+                <p>Here you would need to click on the green color.</p>
                 <p><strong>To start each trial, you must click the BLACK CROSS in the center of the screen.</strong></p>
             </div>
         `;
@@ -568,22 +568,18 @@ var demographics = {
         </div>
     `,
     button_label: 'Continue',
-    
-    // This function runs when the trial loads
+   
     on_load: function() {
         const ageInput = document.getElementById('age_input');
         const pnsCheck = document.getElementById('pns_check');
 
-        // Listen for changes to the checkbox
         pnsCheck.addEventListener('change', function() {
             if(this.checked) {
-                // If checked: Disable the text box and remove 'required' so they can submit
                 ageInput.disabled = true;
                 ageInput.required = false;
-                ageInput.value = ""; // Clear any number they might have typed
+                ageInput.value = ""; 
                 ageInput.style.backgroundColor = "#e0e0e0";
             } else {
-                // If unchecked: Re-enable the text box and make it required again
                 ageInput.disabled = false;
                 ageInput.required = true;
                 ageInput.style.backgroundColor = "white";
